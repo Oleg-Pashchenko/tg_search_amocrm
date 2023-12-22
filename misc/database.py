@@ -21,6 +21,7 @@ class TgSearchAccounts(Base):
     amo_host = Column(String)
     amo_password = Column(String)
     deal_hi_message = Column(String, default="Привет")
+    link_to_telegram_channel = Column(String, default="")
 
     search_words = relationship('SearchWords', back_populates='owner')
     telegram_chats = relationship('TelegramChats', back_populates='owner')
