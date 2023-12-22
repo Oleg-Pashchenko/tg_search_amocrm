@@ -13,6 +13,7 @@ class TgSearchAccounts(Base):
 
     id = Column(Integer, primary_key=True)
     radist_api_key = Column(String)
+    radist_connection_id = Column(Integer)
     amo_login = Column(String)
     amo_host = Column(String)
     amo_password = Column(String)

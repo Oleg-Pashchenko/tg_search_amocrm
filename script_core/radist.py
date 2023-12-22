@@ -32,8 +32,9 @@ class Radist:
 
     def send_message(self, message: str, username: str):
         """Создает сделку и отправляет приветственное сообщение"""
-        pass
-
+        response, status = self._get_company_id()
+        if not status:
+            return  # Sentry alert
 
 # radist = Radist(api_key=api_key)
 # print(radist.is_api_key_valid())
