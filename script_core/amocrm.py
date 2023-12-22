@@ -63,22 +63,26 @@ class Amocrm:
         return response['response']['id'][0]
 
     def connect(self) -> (str, bool):
-        self._create_session()
-        response = self.session.post(
-            f"https://www.amocrm.ru/oauth2/authorize",
-            data={
-                "csrf_token": self.csrf_token,
-                "username": self.login,
-                "password": self.password,
-            },
-            headers=self.headers,
-        )
-        if response.status_code != 200:
-            return "Некорректные входные данные для AmoCRM!", False
+        print(self.host, self.password, self.login)
+        try:
+            self._create_session()
+            response = self.session.post(
+                f"{self.host}oauth2/authorize",
+                data={
+                    "csrf_token": self.csrf_token,
+                    "username": self.login,
+                    "password": self.password,
+                },
+                headers=self.headers,
+            )
+            if response.status_code != 200:
+                return "Некорректные входные данные для AmoCRM!", False
 
-        self.headers["access_token"] = response.cookies.get("access_token")
-        self.headers["refresh_token"] = response.cookies.get("refresh_token")
-        return "Выполнен вход в Amocrm!", True
+            self.headers["access_token"] = response.cookies.get("access_token")
+            self.headers["refresh_token"] = response.cookies.get("refresh_token")
+            return "Выполнен вход в Amocrm!", True
+        except Exception as e:
+            return "Проверьте соединение с AmoCRM!", False
 
     def execute_filling(self, fields: dict, fio):
         deal_id, pipeline_id, status = self._get_deal_by_fio(fio)

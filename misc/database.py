@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, BigInteger
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 import os
 import dotenv
@@ -22,20 +22,9 @@ class TgSearchAccounts(Base):
     amo_password = Column(String)
     deal_hi_message = Column(String, default="Привет")
     link_to_telegram_channel = Column(String, default="")
+    search_words = Column(String, default="")
 
-    search_words = relationship('SearchWords', back_populates='owner')
     telegram_chats = relationship('TelegramChats', back_populates='owner')
-
-
-class SearchWords(Base):
-    __tablename__ = 'SearchWords'
-
-    id = Column(Integer, primary_key=True)
-    owner_id = Column(Integer, ForeignKey('TgSearchAccounts.id'))
-    word = Column(String)
-    enabled = Column(Boolean)
-
-    owner = relationship('TgSearchAccounts', back_populates='search_words')
 
 
 class TelegramChats(Base):
@@ -43,7 +32,7 @@ class TelegramChats(Base):
 
     id = Column(Integer, primary_key=True)
     owner_id = Column(Integer, ForeignKey('TgSearchAccounts.id'))
-    chat_id = Column(Integer)
+    chat_id = Column(BigInteger)
     chat_name = Column(String)
     enabled = Column(Boolean)
 
@@ -62,23 +51,14 @@ session = Session()
 
 # Methods to interact with the database
 
-def add_search_account(radist_api_key, amo_login, amo_host, amo_password, hi_message):
-    account = TgSearchAccounts(radist_api_key=radist_api_key, amo_login=amo_login, amo_host=amo_host,
-                               amo_password=amo_password, deal_hi_message=hi_message)
+def add_search_account(radist_api_key, radist_connection_id, amo_login, amo_host, amo_password, hi_message, email,
+                       password):
+    account = TgSearchAccounts(radist_api_key=radist_api_key, radist_connection_id=radist_connection_id,
+                               amo_login=amo_login, amo_host=amo_host,
+                               amo_password=amo_password, deal_hi_message=hi_message, email=email, password=password)
     session.add(account)
     session.commit()
     return account
-
-
-def add_search_word(owner_id, word, enabled=True):
-    search_account = session.query(TgSearchAccounts).filter_by(id=owner_id).first()
-    if search_account:
-        search_word = SearchWords(owner_id=owner_id, word=word, enabled=enabled)
-        session.add(search_word)
-        session.commit()
-        return search_word
-    else:
-        return None
 
 
 def add_telegram_chat(owner_id, chat_id, chat_name, enabled=True):
@@ -92,26 +72,6 @@ def add_telegram_chat(owner_id, chat_id, chat_name, enabled=True):
         return None
 
 
-def delete_search_word(word_id):
-    search_word = session.query(SearchWords).filter_by(id=word_id).first()
-    if search_word:
-        session.delete(search_word)
-        session.commit()
-        return True
-    else:
-        return False
-
-
-def edit_search_word_enable_status(word_id, new_status):
-    search_word = session.query(SearchWords).filter_by(id=word_id).first()
-    if search_word:
-        search_word.enabled = new_status
-        session.commit()
-        return True
-    else:
-        return False
-
-
 def edit_telegram_chat_enable_status(chat_id, new_status):
     telegram_chat = session.query(TelegramChats).filter_by(id=chat_id).first()
     if telegram_chat:
@@ -120,3 +80,52 @@ def edit_telegram_chat_enable_status(chat_id, new_status):
         return True
     else:
         return False
+
+
+def get_username_status(username: str):
+    telegram_account = session.query(TgSearchAccounts).filter_by(email=username).one_or_none()
+    return telegram_account is not None
+
+
+def auth_correct(username: str, password: str) -> bool:
+    telegram_account = session.query(TgSearchAccounts).filter_by(email=username, password=password).one_or_none()
+    return telegram_account is not None
+
+
+def get_user(username: str) -> bool:
+    telegram_account = session.query(TgSearchAccounts).filter_by(email=username).first()
+    return telegram_account
+
+
+def get_chats_by_user(user_id: int):
+    telegram_chats = session.query(TelegramChats).order_by(TelegramChats.enabled).filter_by(owner_id=user_id).all()
+    return telegram_chats[::-1]
+
+
+def disable_chats_by_user_id(user_id: int):
+    chats = get_chats_by_user(user_id)
+    for chat in chats:
+        chat.enabled = False
+        session.add(chat)
+    session.commit()
+
+
+def enable_chat(chat_id: int):
+    chat = session.query(TelegramChats).filter_by(chat_id=chat_id).first()
+    chat.enabled = True
+    session.add(chat)
+    session.commit()
+
+
+def update_search_info(keywords, hi_message, account_to_post, user_id: int):
+    telegram_account = session.query(TgSearchAccounts).filter_by(id=user_id).first()
+    telegram_account.deal_hi_message = hi_message.strip()
+    telegram_account.link_to_telegram_channel = account_to_post.strip()
+    telegram_account.search_words = keywords.strip()
+    session.add(telegram_account)
+    session.commit()
+
+
+def get_search_info(user_id: int):
+    telegram_account = session.query(TgSearchAccounts).filter_by(id=user_id).first()
+    return telegram_account
