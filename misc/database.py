@@ -15,6 +15,10 @@ class TgSearchAccounts(Base):
     email = Column(String)
     password = Column(String)
 
+    api_id = Column(String, default='')
+    api_hash = Column(String, default='')
+    session_name = Column(String, default='')
+
     radist_api_key = Column(String)
     radist_connection_id = Column(Integer)
     amo_login = Column(String)
@@ -129,3 +133,20 @@ def update_search_info(keywords, hi_message, account_to_post, user_id: int):
 def get_search_info(user_id: int):
     telegram_account = session.query(TgSearchAccounts).filter_by(id=user_id).first()
     return telegram_account
+
+
+def get_all_accounts():
+    return session.query(TgSearchAccounts).all()
+
+
+def get_all_enabled_chats_by_user_id(user_id: int):
+    return session.query(TelegramChats).filter_by(owner_id=user_id, enabled=True).all()
+
+
+def save_telegram(api_id: str, api_hash: str, session_name: str, user_id: int):
+    telegram_account = session.query(TgSearchAccounts).filter_by(id=user_id).first()
+    telegram_account.api_id = api_id
+    telegram_account.api_hash = api_hash
+    telegram_account.session_name = session_name
+    session.add(telegram_account)
+    session.commit()

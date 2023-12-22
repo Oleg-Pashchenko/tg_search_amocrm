@@ -137,8 +137,8 @@ def chats():
     phone_number = session.get('phone_number')
     api_id = session.get('api_id')
     api_hash = session.get('api_hash')
-
-    client = TelegramClient(f'../sessions/{phone_number}', api_id, api_hash)
+    session_name = f'session_{phone_number}'
+    client = TelegramClient(session_name, api_id, api_hash)
     client.connect()
 
     if not client.is_user_authorized():
@@ -148,7 +148,7 @@ def chats():
             client.sign_in(phone_number, code)
         else:
             return render_template('enter_code.html')
-
+    database.save_telegram(api_id, api_hash, session_name, session.get('user_id'))
     dialogs = client.get_dialogs()
     chat_list = [{'title': dialog.title, 'id': dialog.id} for dialog in dialogs]
     client.disconnect()
@@ -158,7 +158,7 @@ def chats():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
 
 # 44309
 # 7QTSPLam9oe6J3kYi9H1S1tmvSsWSoZ_WAuYENtxTd-CF65Ugl_YRhYyFpD9ll1J01cdD0I-jmNowMtGz9ZTrw
