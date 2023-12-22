@@ -36,6 +36,7 @@ class Radist:
         if not status:
             return  # Sentry alert
 
+
 # radist = Radist(api_key=api_key)
 # print(radist.is_api_key_valid())
 

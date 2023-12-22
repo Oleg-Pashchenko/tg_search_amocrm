@@ -12,6 +12,9 @@ class TgSearchAccounts(Base):
     __tablename__ = 'TgSearchAccounts'
 
     id = Column(Integer, primary_key=True)
+    email = Column(String)
+    password = Column(String)
+
     radist_api_key = Column(String)
     radist_connection_id = Column(Integer)
     amo_login = Column(String)
