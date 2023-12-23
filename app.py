@@ -160,8 +160,4 @@ def chats():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)
 
-# 44309
-# 7QTSPLam9oe6J3kYi9H1S1tmvSsWSoZ_WAuYENtxTd-CF65Ugl_YRhYyFpD9ll1J01cdD0I-jmNowMtGz9ZTrw
-# https://olegtest14.amocrm.ru/
-# havaisaeva19999@gmail.com
-# A12345mo
+

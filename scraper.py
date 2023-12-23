@@ -60,8 +60,8 @@ def main():
                                             telegram_client.send_message(int(group_id), message_text, parse_mode='HTML')
                                             if message.sender.username:
                                                 r.connect()
-                                                r.send_message(message=account.deal_hi_message,
-                                                               username=message.sender.username)
+                                                print(r.send_message(message=account.deal_hi_message,
+                                                               username=message.sender.username))
                                                 time.sleep(15)
 
                                                 # amo.execute_filling(fields={'Ключ поиска': keyword_str,

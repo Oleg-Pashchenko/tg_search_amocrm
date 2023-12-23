@@ -94,3 +94,10 @@ class Radist:
         if not status:
             return "Не удалось отправить сообщение!", False
         return "Сообщение отправлено!", True
+
+
+r = Radist(api_key='rEG1b4TLZ4w3gZRNZSHhXjIR-4wC89Dhdo2BPijt5_-Zit27cbxxUYjvVBs6ENJmWhXoBi7wTHIzgMvL70QkYw',
+           connection_id=44309)
+
+r.connect()
+print(r.send_message("Ты кто", '@With_sea_vew'))
