@@ -16,6 +16,7 @@ def create_telegram_client(session_name, api_id, api_hash):
 
 def main():
     while True:
+        time.sleep(60)
         accounts = database.get_all_accounts()
         for account in accounts:
             telegram_client = create_telegram_client(account.session_name, account.api_id, account.api_hash)
@@ -62,7 +63,6 @@ def main():
                                                 r.connect()
                                                 print(r.send_message(message=account.deal_hi_message,
                                                                username=message.sender.username))
-                                                time.sleep(15)
 
                                                 # amo.execute_filling(fields={'Ключ поиска': keyword_str,
                                                 #                                 'Сообщение': message.text,
