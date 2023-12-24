@@ -58,7 +58,6 @@ def main():
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
                                             print('Найдено сообщение!')
-                                            print(chat.entity.username)
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
@@ -66,9 +65,9 @@ def main():
                                             # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}'>{chat.title}</a>\n"
                                             message_text += f"Ключ: {keyword_str}\n"
                                             # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}/{message.id}'>Оригинал сообщения</a>"
-                                            if chat.username:
-                                                message_text += f"<a href='https://t.me/{chat.username}'>{chat.title}</a>\n"
-                                                message_text += f"<a href='https://t.me/{chat.username}/{message.id}'>Оригинал сообщения</a>"
+                                            if chat.entity.username:
+                                                message_text += f"<a href='https://t.me/{chat.entity.username}'>{chat.title}</a>\n"
+                                                message_text += f"<a href='https://t.me/{chat.entity.username}/{message.id}'>Оригинал сообщения</a>"
                                             else:
                                                 message_text += f"<a href='https://web.telegram.org/a/#{chat.id}'>{chat.title}</a>\n"
                                                 message_text += f"<a href='https://web.telegram.org/a/#{chat.id}/{message.id}'>Оригинал сообщения</a>"
