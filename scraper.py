@@ -1,3 +1,4 @@
+import os
 import re
 import time
 from telethon.sync import TelegramClient
@@ -19,6 +20,8 @@ def main():
         time.sleep(60)
         accounts = database.get_all_accounts()
         for account in accounts:
+            if not os.path.exists(account.session_name):
+                continue
             telegram_client = create_telegram_client(account.session_name, account.api_id, account.api_hash)
             amo = amocrm.Amocrm(host=account.amo_host, email=account.amo_login,
                                 password=account.amo_password)
