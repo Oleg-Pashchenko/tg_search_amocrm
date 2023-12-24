@@ -136,6 +136,7 @@ def get_search_info(user_id: int):
 
 
 def get_all_accounts():
+    session.commit()
     return session.query(TgSearchAccounts).all()
 
 
