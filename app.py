@@ -90,8 +90,9 @@ def home():
         del params['search_keywords']
         del params['hi_message']
         del params['account_to_post']
+        print("PARAMS", params)
         for chat in params.keys():
-            database.enable_chat(int(chat))
+            database.enable_chat(int(chat), session['user_id'])
 
     search_info = database.get_search_info(session['user_id'])
     hi_message = search_info.deal_hi_message

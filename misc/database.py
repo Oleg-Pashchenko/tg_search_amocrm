@@ -114,8 +114,8 @@ def disable_chats_by_user_id(user_id: int):
     session.commit()
 
 
-def enable_chat(chat_id: int):
-    chat = session.query(TelegramChats).filter_by(chat_id=chat_id).first()
+def enable_chat(chat_id: int, user_id):
+    chat = session.query(TelegramChats).filter_by(chat_id=chat_id, owner_id=user_id).first()
     chat.enabled = True
     session.add(chat)
     session.commit()
