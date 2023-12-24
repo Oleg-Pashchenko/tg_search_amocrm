@@ -40,8 +40,7 @@ def main():
                 group_id = account.link_to_telegram_channel
 
                 def find_keywords(mess):
-                    founded_keywords = [keyword for keyword in keywords if
-                                        re.search(fr'\b{re.escape(keyword)}\b', mess.text, re.IGNORECASE)]
+                    founded_keywords = [keyword for keyword in keywords if keyword.lower().strip() in mess.text.lower().strip()]
                     return founded_keywords
 
                 chats= telegram_client.get_dialogs()
