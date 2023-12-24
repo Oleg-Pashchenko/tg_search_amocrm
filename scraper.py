@@ -5,7 +5,7 @@ import time
 import telethon
 from telethon.sync import TelegramClient
 from telethon.tl.patched import Message
-
+from telethon.tl.custom.dialog import Dialog
 from misc import database
 from script_core import amocrm, radist
 
@@ -43,7 +43,7 @@ def main():
                                         re.search(fr'\b{re.escape(keyword)}\b', mess.text, re.IGNORECASE)]
                     return founded_keywords
 
-                chats = telegram_client.get_dialogs()
+                chats= telegram_client.get_dialogs()
 
                 for chat in chats:
                     try:
@@ -58,7 +58,7 @@ def main():
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
                                             print('Найдено сообщение!')
-                                            print(type(chat))
+                                            print(chat.to_dict())
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
