@@ -68,9 +68,11 @@ def add_search_account(radist_api_key, radist_connection_id, amo_login, amo_host
 def add_telegram_chat(owner_id, chat_id, chat_name, enabled=True):
     search_account = session.query(TgSearchAccounts).filter_by(id=owner_id).first()
     if search_account:
-        telegram_chat = TelegramChats(owner_id=owner_id, chat_id=chat_id, chat_name=chat_name, enabled=enabled)
-        session.add(telegram_chat)
-        session.commit()
+        telegram_chat = session.query(TelegramChats).filter_by(chat_id=chat_id, owner_id=owner_id).one_or_none()
+        if not telegram_chat:
+            telegram_chat = TelegramChats(owner_id=owner_id, chat_id=chat_id, chat_name=chat_name, enabled=enabled)
+            session.add(telegram_chat)
+            session.commit()
         return telegram_chat
     else:
         return None
