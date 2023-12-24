@@ -19,7 +19,7 @@ def main():
     while True:
         accounts = database.get_all_accounts()
         for account in accounts:
-            if not os.path.exists(account.session_name):
+            if not os.path.exists(account.session_name + '.session'):
                 continue
             telegram_client = create_telegram_client(account.session_name, account.api_id, account.api_hash)
             amo = amocrm.Amocrm(host=account.amo_host, email=account.amo_login,
