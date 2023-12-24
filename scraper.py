@@ -58,7 +58,7 @@ def main():
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
                                             print('Найдено сообщение!')
-                                            print(chat.entity.to_dict())
+                                            print(chat.entity.username)
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
