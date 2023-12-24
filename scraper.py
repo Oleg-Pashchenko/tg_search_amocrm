@@ -17,7 +17,6 @@ def create_telegram_client(session_name, api_id, api_hash):
 
 def main():
     while True:
-        time.sleep(60)
         accounts = database.get_all_accounts()
         for account in accounts:
             if not os.path.exists(account.session_name):
@@ -81,6 +80,8 @@ def main():
                     except:
                         print("messages get error")
             telegram_client.disconnect()
+        time.sleep(60)
+
 
 if __name__ == '__main__':
     main()
