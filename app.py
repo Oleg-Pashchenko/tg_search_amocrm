@@ -11,6 +11,7 @@ from script_core import radist, amocrm
 
 dotenv.load_dotenv()
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 
