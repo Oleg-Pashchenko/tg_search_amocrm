@@ -1,7 +1,10 @@
 import os
 import re
 import time
+
+import telethon
 from telethon.sync import TelegramClient
+from telethon.tl.patched import Message
 
 from misc import database
 from script_core import amocrm, radist
@@ -49,7 +52,8 @@ def main():
                             messages = telegram_client.get_messages(entity=chat, limit=100)
                             for message in messages:
                                 if message and (message.id not in past_messages_id):
-                                    print(type(message))
+                                    if not isinstance(message, Message):
+                                        continue
                                     try:
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
