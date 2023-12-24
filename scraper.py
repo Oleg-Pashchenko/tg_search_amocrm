@@ -23,6 +23,7 @@ def main():
         accounts = database.get_all_accounts()
         for account in accounts:
             print(account.session_name + '.session')
+            print(account.search_words)
             if not os.path.exists(account.session_name + '.session'):
                 continue
             telegram_client = create_telegram_client(account.session_name, account.api_id, account.api_hash)
