@@ -58,6 +58,7 @@ def main():
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
                                             print('Найдено сообщение!')
+                                            print(type(chat))
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
