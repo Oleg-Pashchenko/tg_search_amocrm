@@ -73,10 +73,11 @@ def main():
                                                 message_text += f"<a href='https://web.telegram.org/a/#{chat.id}'>{chat.title}</a>\n"
                                                 message_text += f"<a href='https://web.telegram.org/a/#{chat.id}/{message.id}'>Оригинал сообщения</a>"
                                             past_messages_id.append(message.id)
-
+                                            time.sleep(1)
                                             telegram_client.send_message(int(group_id), message_text, parse_mode='HTML')
 
                                             if message.sender.username and account.deal_hi_message.strip() != '':
+                                                time.sleep(1)
                                                 r.connect()
                                                 f_message = f'{account.deal_hi_message}\n\n{message.text}'
                                                 print(
@@ -91,7 +92,7 @@ def main():
                     except:
                         print("messages get error")
             telegram_client.disconnect()
-        time.sleep(60)
+        time.sleep(40)
 
 
 if __name__ == '__main__':
