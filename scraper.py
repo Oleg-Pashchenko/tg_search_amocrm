@@ -61,14 +61,16 @@ def main():
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
-                                            print(chat)
                                             message_text += f"Пользователь: ({message.sender.username}), {message.sender.first_name}\nГруппа: "
                                             # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}'>{chat.title}</a>\n"
-                                            message_text += f"<a href='https://web.telegram.org/a/#{chat.id}'>{chat.title}</a>\n"
                                             message_text += f"Ключ: {keyword_str}\n"
                                             # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}/{message.id}'>Оригинал сообщения</a>"
-                                            message_text += f"<a href='https://web.telegram.org/a/#{chat.id}/{message.id}'>Оригинал сообщения</a>"
-
+                                            if chat.username:
+                                                message_text += f"<a href='https://t.me/{chat.username}'>{chat.title}</a>\n"
+                                                message_text += f"<a href='https://t.me/{chat.username}/{message.id}'>Оригинал сообщения</a>"
+                                            else:
+                                                message_text += f"<a href='https://web.telegram.org/a/#{chat.id}'>{chat.title}</a>\n"
+                                                message_text += f"<a href='https://web.telegram.org/a/#{chat.id}/{message.id}'>Оригинал сообщения</a>"
                                             past_messages_id.append(message.id)
 
                                             telegram_client.send_message(int(group_id), message_text, parse_mode='HTML')
