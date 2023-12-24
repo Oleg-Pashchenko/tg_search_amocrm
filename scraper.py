@@ -46,30 +46,28 @@ def main():
                             messages = telegram_client.get_messages(entity=chat, limit=100)
                             for message in messages:
                                 if message and (message.id not in past_messages_id):
+                                    print(type(message))
                                     try:
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
                                             message_text += f"Пользователь: ({message.sender.username}), {message.sender.first_name}\nГруппа: "
-                                            message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}'>{chat.title}</a>\n"
+                                            # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}'>{chat.title}</a>\n"
+                                            message_text += f"<a href='https://web.telegram.org/a/#{chat.id}'>{chat.title}</a>\n"
                                             message_text += f"Ключ: {keyword_str}\n"
-                                            message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}/{message.id}'>Оригинал сообщения</a>"
+                                            # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}/{message.id}'>Оригинал сообщения</a>"
+                                            message_text += f"<a href='https://web.telegram.org/a/#{chat.id}/{message.id}'>Оригинал сообщения</a>"
 
                                             past_messages_id.append(message.id)
 
                                             telegram_client.send_message(int(group_id), message_text, parse_mode='HTML')
-                                            if message.sender.username:
-                                                r.connect()
-                                                print(r.send_message(message=account.deal_hi_message,
-                                                               username=message.sender.username))
 
-                                                # amo.execute_filling(fields={'Ключ поиска': keyword_str,
-                                                #                                 'Сообщение': message.text,
-                                                #                             'Ссылка на сообщение': f"https://t.me/{chat.title.replace(' ', '_')}/{message.id}",
-                                                #                             'Беседа': f"https://t.me/{chat.title.replace(' ', '_')}"
-                                                #                             },
-                                                #                    fio=message.sender.username)
+                                            if message.sender.username and account.deal_hi_message.strip() != '':
+                                                r.connect()
+                                                f_message = f'{account.deal_hi_message}\n\n{message.text}'
+                                                print(
+                                                    r.send_message(message=f_message, username=message.sender.username))
 
 
 
