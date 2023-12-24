@@ -45,7 +45,7 @@ class TelegramChats(Base):
 
 # Database setup
 engine = create_engine(f'postgresql://{os.getenv("DB_LOGIN")}:{os.getenv("DB_PASSWORD")}'
-                       f'@{os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}/{os.getenv("DB_NAME")}', echo=True)
+                       f'@{os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}/{os.getenv("DB_NAME")}', echo=False)
 Base.metadata.create_all(bind=engine)
 
 # Session setup
