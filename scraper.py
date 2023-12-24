@@ -60,6 +60,8 @@ def main():
                                             print('Найдено сообщение!')
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
+
+                                            print(chat)
                                             message_text += f"Пользователь: ({message.sender.username}), {message.sender.first_name}\nГруппа: "
                                             # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}'>{chat.title}</a>\n"
                                             message_text += f"<a href='https://web.telegram.org/a/#{chat.id}'>{chat.title}</a>\n"
