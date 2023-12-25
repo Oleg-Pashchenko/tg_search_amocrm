@@ -36,6 +36,7 @@ def main():
             keywords = account.search_words.split(',')
             search_groups = database.get_all_enabled_chats_by_user_id(account.id)
             for search_group in search_groups:
+                print(search_group)
                 search_title = search_group.chat_name
                 group_id = account.link_to_telegram_channel
 
