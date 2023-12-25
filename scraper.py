@@ -36,13 +36,10 @@ def main():
             keywords = account.search_words.split(',')
             search_groups = database.get_all_enabled_chats_by_user_id(account.id)
             for search_group in search_groups:
-                print(search_group)
                 search_title = search_group.chat_name
                 group_id = account.link_to_telegram_channel
 
                 def find_keywords(mess):
-                    print(keywords)
-                    print(mess.text)
                     founded_keywords = [keyword for keyword in keywords if keyword.lower().strip() in mess.text.lower().strip()]
                     return founded_keywords
 
@@ -51,7 +48,7 @@ def main():
                 for chat in chats:
                     try:
                         if chat.title == search_title:
-                            print(chat.title)
+                            print(chat.title, 'Executed for', keywords)
                             messages = telegram_client.get_messages(entity=chat, limit=100)
                             for message in messages:
                                 if message and (message.id not in past_messages_id):
