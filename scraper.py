@@ -20,7 +20,7 @@ def main():
         start = time.time()
         accounts = database.get_all_accounts()
         for id, account in enumerate(accounts):
-            print(id, '/', len(accounts), ':', account.session_name + ".session")
+            print(id + 1, '/', len(accounts), ':', account.session_name + ".session")
             if not os.path.exists(account.session_name + ".session"):
                 continue
 
