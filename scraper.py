@@ -110,7 +110,9 @@ def main():
 
                     except:
                         print("messages get error")
+            s = time.time()
             telegram_client.disconnect()
+            print('Disconnect time', time.time() - s)
         print('Execution time:', time.time() - start)
 
 
