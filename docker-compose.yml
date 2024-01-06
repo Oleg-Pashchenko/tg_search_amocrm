@@ -1,13 +1,6 @@
 version: '3'
 
 services:
-  site:
-    restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
   scraper:
     restart: always
     build:
