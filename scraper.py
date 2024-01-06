@@ -85,7 +85,7 @@ def main():
                                     try:
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
-                                            print("Найдено сообщение!", message.text)
+                                            print("Найдено сообщение!")
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
@@ -118,7 +118,6 @@ def main():
                         print("messages get error")
             telegram_client.disconnect()
         print('Execution time:', time.time() - start)
-        time.sleep(40)
 
 
 if __name__ == "__main__":
