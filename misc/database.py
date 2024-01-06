@@ -153,3 +153,12 @@ def save_telegram(api_id: str, api_hash: str, session_name: str, user_id: int):
     telegram_account.session_name = session_name
     session.add(telegram_account)
     session.commit()
+
+
+def check_same_tg_number(session_name: str):
+    result = session.query(TgSearchAccounts).filter_by(session_name=session_name).one()
+
+    if result:
+        return True
+    else:
+        return False

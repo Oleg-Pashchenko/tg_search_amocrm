@@ -7,6 +7,7 @@ from telethon.sync import *
 import os
 import dotenv
 from misc import database
+from misc.database import check_same_tg_number
 from script_core import radist, amocrm
 
 dotenv.load_dotenv()
@@ -87,7 +88,8 @@ def home():
     if request.method == 'POST':
         database.disable_chats_by_user_id(session['user_id'])
         params = request.form.to_dict()
-        database.update_search_info(params['search_keywords'], params['hi_message'], params['account_to_post'], session['user_id'])
+        database.update_search_info(params['search_keywords'], params['hi_message'], params['account_to_post'],
+                                    session['user_id'])
         del params['search_keywords']
         del params['hi_message']
         del params['account_to_post']
@@ -123,9 +125,11 @@ def telegram_auth():
         api_hash = request.form['api_hash']
         session['api_hash'] = api_hash
         phone_number = request.form['phone_number']
-        session['phone_number'] = phone_number
-
-        return redirect(url_for('chats'))
+        if check_same_tg_number(f'session_{phone_number}'):
+            return flash('Номер уже используется!')
+        else:
+            session['phone_number'] = phone_number
+            return redirect(url_for('chats'))
 
     return render_template('telegram_auth.html')
 
@@ -161,5 +165,3 @@ def chats():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
-
-
