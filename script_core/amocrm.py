@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 class Amocrm:
     def __init__(self, host, email, password):
         self.host = host
@@ -21,20 +22,23 @@ class Amocrm:
             "X-Requested-With": "XMLHttpRequest",
             "Cookie": f"session_id={session_id}; " f"csrf_token={self.csrf_token};",
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) "
-                          "Chrome/111.0.0.0 Safari/537.36",
+            "Chrome/111.0.0.0 Safari/537.36",
         }
 
     def _get_deal_by_fio(self, fio) -> (int, int, bool):
-
-        response = self.session.get(self.host + f"ajax/v4/inbox/list?query[message]={fio}&limit={50}",
-                                    headers=self.headers)
+        response = self.session.get(
+            self.host + f"ajax/v4/inbox/list?query[message]={fio}&limit={50}",
+            headers=self.headers,
+        )
 
         try:
-            if len(response.json()['_embedded']['talks']) != 1:
+            if len(response.json()["_embedded"]["talks"]) != 1:
                 return None, None, False
-            return (response.json()['_embedded']['talks'][0]['entity']['id'],
-                    response.json()['_embedded']['talks'][0]['entity']['pipeline_id'],
-                    True)
+            return (
+                response.json()["_embedded"]["talks"][0]["entity"]["id"],
+                response.json()["_embedded"]["talks"][0]["entity"]["pipeline_id"],
+                True,
+            )
         except:
             return None, None, False
 
@@ -45,24 +49,26 @@ class Amocrm:
             "lead[PIPELINE_ID]": pipeline_id,
             "ID": deal_id,
         }
-        self.session.post(url=self.host + f"ajax/leads/detail/", data=data, headers=self.headers)
+        self.session.post(
+            url=self.host + f"ajax/leads/detail/", data=data, headers=self.headers
+        )
 
     def _create_field(self, field):
-        url = f'{self.host}ajax/settings/custom_fields/'
+        url = f"{self.host}ajax/settings/custom_fields/"
         data = {
-            'action': 'apply_changes',
-            'cf[add][0][element_type]': 2,
-            'cf[add][0][sortable]': True,
-            'cf[add][0][groupable]': True,
-            'cf[add][0][predefined]': False,
-            'cf[add][0][type_id]': 1,
-            'cf[add][0][name]': field,
-            'cf[add][0][disabled]': '',
-            'cf[add][0][settings][formula]': '',
-            'cf[add][0][pipeline_id]': 0
+            "action": "apply_changes",
+            "cf[add][0][element_type]": 2,
+            "cf[add][0][sortable]": True,
+            "cf[add][0][groupable]": True,
+            "cf[add][0][predefined]": False,
+            "cf[add][0][type_id]": 1,
+            "cf[add][0][name]": field,
+            "cf[add][0][disabled]": "",
+            "cf[add][0][settings][formula]": "",
+            "cf[add][0][pipeline_id]": 0,
         }
         response = self.session.post(url, data=data, headers=self.headers).json()
-        return response['response']['id'][0]
+        return response["response"]["id"][0]
 
     def connect(self) -> (str, bool):
         print(self.host, self.password, self.login)
@@ -88,37 +94,55 @@ class Amocrm:
 
     def get_params_information(self, fields: dict):
         result = {}
-        url = f'{self.host}/leads/detail/{self.deal_id}'  # api/v4/leads/custom_fields
+        url = f"{self.host}/leads/detail/{self.deal_id}"  # api/v4/leads/custom_fields
         response = self.session.get(url)
-        soup = BeautifulSoup(response.text, features='html.parser')
+        soup = BeautifulSoup(response.text, features="html.parser")
         #  print(soup)
 
-        for field in soup.find_all('div', {'class': 'linked-form__field linked-form__field-text'}):
-            label = field.find('div', {'class': 'linked-form__field__label'}).text.strip()
-            value = field.find('div', {'class': 'linked-form__field__value'}).find('input')['value'].strip()
-            index = field.get('data-id')
+        for field in soup.find_all(
+            "div", {"class": "linked-form__field linked-form__field-text"}
+        ):
+            label = field.find(
+                "div", {"class": "linked-form__field__label"}
+            ).text.strip()
+            value = (
+                field.find("div", {"class": "linked-form__field__value"})
+                .find("input")["value"]
+                .strip()
+            )
+            index = field.get("data-id")
             if label in fields.keys():
-                if value == '':
+                if value == "":
                     value = None
 
-                result[label] = {'active': value, 'values': [], 'type': 'field', 'id': index}
+                result[label] = {
+                    "active": value,
+                    "values": [],
+                    "type": "field",
+                    "id": index,
+                }
 
-        selects = soup.find_all('div', {'class': 'linked-form__field linked-form__field-select'})
+        selects = soup.find_all(
+            "div", {"class": "linked-form__field linked-form__field-select"}
+        )
         for select in selects:
-            k = select.find('div', {'class': 'linked-form__field__label'}).text
-            v = select.find('span', {'class': 'control--select--button-inner'}).text.strip()
-            index = select.get('data-id')
+            k = select.find("div", {"class": "linked-form__field__label"}).text
+            v = select.find(
+                "span", {"class": "control--select--button-inner"}
+            ).text.strip()
+            index = select.get("data-id")
             if k in fields.keys():
-                result[k] = {'active': v,
-                             'values': [],
-                             'type': 'select',
-                             'id': index}
-                if result[k]['active'] == 'Выбрать':
-                    result[k]['active'] = None
-                for v in select.find_all('li', {'class': 'control--select--list--item'}):
-                    index = v.get('data-value')
-                    if v.text.strip() != 'Выбрать':
-                        result[k]['values'].append({'value': v.text.strip(), 'id': index})
+                result[k] = {"active": v, "values": [], "type": "select", "id": index}
+                if result[k]["active"] == "Выбрать":
+                    result[k]["active"] = None
+                for v in select.find_all(
+                    "li", {"class": "control--select--list--item"}
+                ):
+                    index = v.get("data-value")
+                    if v.text.strip() != "Выбрать":
+                        result[k]["values"].append(
+                            {"value": v.text.strip(), "id": index}
+                        )
 
         need_update = False
         for field in fields.keys():
@@ -138,5 +162,5 @@ class Amocrm:
             if f not in params.keys():
                 f_id = self._create_field(f)
             else:
-                f_id = params[f]['id']
+                f_id = params[f]["id"]
             self._fill_field(f_id, deal_id, pipeline_id, fields[f])

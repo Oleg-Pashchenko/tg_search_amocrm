@@ -1,23 +1,22 @@
 import json
 import requests
 
-host = 'https://api.radist.online/v2'
+host = "https://api.radist.online/v2"
 
 
 class Radist:
     def __init__(self, api_key: str, connection_id: int):
-        self.headers = {
-            'accept': 'application/json',
-            'X-Api-Key': api_key
-        }
+        self.headers = {"accept": "application/json", "X-Api-Key": api_key}
         self.connection_id = connection_id
         self.company_id = None
 
     def _get_company_id(self) -> (int, bool):
         try:
-            response = requests.get(host + '/companies/?limit=100&offset=0', headers=self.headers)
+            response = requests.get(
+                host + "/companies/?limit=100&offset=0", headers=self.headers
+            )
             if response.status_code == 200:
-                return response.json()['companies'][0]['id'], True
+                return response.json()["companies"][0]["id"], True
             else:
                 return 0, False
         except:
@@ -25,8 +24,10 @@ class Radist:
 
     def _get_connection_id(self) -> (int, bool):
         try:
-            response = requests.get(host + f'/companies/{self.company_id}/connections/{self.connection_id}',
-                                    headers=self.headers)
+            response = requests.get(
+                host + f"/companies/{self.company_id}/connections/{self.connection_id}",
+                headers=self.headers,
+            )
             if response.status_code == 200:
                 return self.connection_id, True
             else:
@@ -36,33 +37,33 @@ class Radist:
 
     def _get_chat_by_username(self, username: str) -> (int, bool):
         try:
-            data = {
-                "connection_id": self.connection_id,
-                "user_name": username
-            }
-            response = requests.post(host + f'/companies/{self.company_id}/messaging/chats/', headers=self.headers,
-                                     data=json.dumps(data))
+            data = {"connection_id": self.connection_id, "user_name": username}
+            response = requests.post(
+                host + f"/companies/{self.company_id}/messaging/chats/",
+                headers=self.headers,
+                data=json.dumps(data),
+            )
             if response.status_code != 200:
                 return -1, False
             else:
-                return response.json()['chat_id'], True
+                return response.json()["chat_id"], True
         except:
             return -1, False
 
     def _send_message_to_radist(self, message: str, chat_id: int) -> bool:
         try:
             data = {
-                'connection_id': self.connection_id,
-                'chat_id': chat_id,
-                'mode': 'async',
-                'message_type': 'text',
-                'text': {
-                    'text': message
-                }
+                "connection_id": self.connection_id,
+                "chat_id": chat_id,
+                "mode": "async",
+                "message_type": "text",
+                "text": {"text": message},
             }
-            response = requests.post(host + f'/companies/{self.company_id}/messaging/messages/',
-                                     headers=self.headers,
-                                     data=json.dumps(data))
+            response = requests.post(
+                host + f"/companies/{self.company_id}/messaging/messages/",
+                headers=self.headers,
+                data=json.dumps(data),
+            )
             return response.status_code == 200
         except:
             return False
@@ -94,4 +95,3 @@ class Radist:
         if not status:
             return "Не удалось отправить сообщение!", False
         return "Сообщение отправлено!", True
-
