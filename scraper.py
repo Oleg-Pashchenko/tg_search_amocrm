@@ -17,10 +17,10 @@ def create_telegram_client(session_name, api_id, api_hash):
 
 def main():
     while True:
+        start = time.time()
         accounts = database.get_all_accounts()
         for account in accounts:
             print(account.session_name + ".session")
-            print(account.search_words)
             if not os.path.exists(account.session_name + ".session"):
                 continue
 
@@ -60,20 +60,18 @@ def main():
                 for chat in chats:
                     try:
                         if chat.title == search_title:
-                            print(chat.title, "Executed for", keywords)
                             messages = telegram_client.get_messages(
                                 entity=chat, limit=100
                             )
                             for message in messages:
                                 message: Message = message
-
                                 if (
-                                    chat.title
-                                    in messages_history[account.session_name].keys()
-                                    and messages_history[account.session_name][
                                         chat.title
-                                    ]
-                                    >= message.date
+                                        in messages_history[account.session_name].keys()
+                                        and messages_history[account.session_name][
+                                    chat.title
+                                ]
+                                        >= message.date
                                 ):
                                     continue
 
@@ -87,7 +85,7 @@ def main():
                                     try:
                                         found_keywords = find_keywords(message)
                                         if found_keywords:
-                                            print("Найдено сообщение!")
+                                            print("Найдено сообщение!", message.text)
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
@@ -108,27 +106,13 @@ def main():
                                                 parse_mode="HTML",
                                             )
 
-                                            if (
-                                                message.sender.username
-                                                and account.deal_hi_message.strip()
-                                                != ""
-                                            ):
-                                                time.sleep(1)
-                                                r.connect()
-                                                f_message = f"{account.deal_hi_message}\n\n{message.text}"
-                                                print(
-                                                    r.send_message(
-                                                        message=f_message,
-                                                        username=message.sender.username,
-                                                    )
-                                                )
-
                                     except Exception as e:
                                         print(f"Error processing {chat.title}: {e}")
 
                     except:
                         print("messages get error")
             telegram_client.disconnect()
+        print('Execution time:', time.time() - start)
         time.sleep(40)
 
 
