@@ -89,7 +89,12 @@ def main():
                                             keyword_str = ", ".join(found_keywords)
                                             message_text = f"{message.text}\n\n"
 
-                                            message_text += f"Пользователь: ({message.sender.username}), {message.sender.first_name}\nГруппа: "
+                                            try:
+                                                first_name = message.sender.first_name
+                                            except:
+                                                first_name = "-"
+
+                                            message_text += f"Пользователь: ({message.sender.username}), {first_name}\nГруппа: "
                                             # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}'>{chat.title}</a>\n"
                                             message_text += f"Ключ: {keyword_str}\n"
                                             # message_text += f"<a href='https://t.me/{chat.title.replace(' ', '_')}/{message.id}'>Оригинал сообщения</a>"
