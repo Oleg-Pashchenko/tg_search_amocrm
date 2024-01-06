@@ -19,27 +19,19 @@ def main():
     while True:
         start = time.time()
         accounts = database.get_all_accounts()
-        for account in accounts:
-            print(account.session_name + ".session")
+        for id, account in enumerate(accounts):
+            print(id, '/', len(accounts), ':', account.session_name + ".session")
             if not os.path.exists(account.session_name + ".session"):
                 continue
 
             if account.session_name not in messages_history.keys():
                 messages_history[account.session_name] = {}
 
+            s = time.time()
             telegram_client = create_telegram_client(
                 account.session_name, account.api_id, account.api_hash
             )
-            amo = amocrm.Amocrm(
-                host=account.amo_host,
-                email=account.amo_login,
-                password=account.amo_password,
-            )
-            amo.connect()
-            r = radist.Radist(
-                api_key=account.radist_api_key,
-                connection_id=account.radist_connection_id,
-            )
+            print('Telegram connect time:', time.time() - s)
 
             keywords = account.search_words.split(",")
             search_groups = database.get_all_enabled_chats_by_user_id(account.id)
@@ -54,15 +46,17 @@ def main():
                         if keyword.lower().strip() in mess.text.lower().strip()
                     ]
                     return founded_keywords
-
+                s = time.time()
                 chats = telegram_client.get_dialogs()
-
+                print('Get dialogs time:', time.time() - s)
                 for chat in chats:
                     try:
                         if chat.title == search_title:
+                            s = time.time()
                             messages = telegram_client.get_messages(
                                 entity=chat, limit=100
                             )
+                            print('Get messages time:', time.time() - s)
                             for message in messages:
                                 message: Message = message
                                 if (
